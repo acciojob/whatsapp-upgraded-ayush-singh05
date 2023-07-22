@@ -15,7 +15,7 @@ public class WhatsappRepository {
     HashMap<Message, User> senderMap = new HashMap<>();
      HashMap<Group, User> adminMap = new HashMap<>();
 //     HashMap<String,User> userMobile = new HashMap<>();
-     int customGroupCount = 0;
+     int customGroupCount;
      int messageId = 0;
 
     public String createUser(String name, String mobile) {
@@ -43,6 +43,7 @@ public class WhatsappRepository {
 
             groupUserMap.put(gr,al);
         }else {
+
             gr.setName("Group "+(customGroupCount));
             gr.setNumberOfParticipants(users.size());
             groupUserMap.put(gr,al);
