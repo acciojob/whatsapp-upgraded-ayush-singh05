@@ -71,7 +71,44 @@ public class WhatsappRepository {
     }
 
     public int removeUser(User user) {
-        return 0;
+
+        boolean userFound = false;
+        Group userGroup = null;
+        for(Group currGroup : groupUserMap.keySet()){
+            List<User> currGroupMembers = groupUserMap.get(currGroup);
+            if(currGroupMembers.contains(user)){
+                userFound = true;
+                userGroup = currGroup;
+
+            }
+        }
+        if(!userFound){
+            throw new RuntimeException("User not found");
+        }
+
+        if(adminMap.get(userGroup) == user){
+            throw new RuntimeException("Cannot remove admin");
+        }
+
+        groupUserMap.get(userGroup).remove(user);
+
+        List<Message> listOfMessagesToBeRemoved = new ArrayList<>();
+        for(Message currMessage : senderMap.keySet()){
+            if(senderMap.get(currMessage) == user){
+                listOfMessagesToBeRemoved.add(currMessage);
+            }
+        }
+
+        for(Message message : listOfMessagesToBeRemoved){
+            groupMessageMap.get(userGroup).remove(message);
+            senderMap.remove(message);
+        }
+
+        userDb.remove(user.getMobile());
+        userGroup.setNumberOfParticipants(groupUserMap.get(userGroup).size());
+
+        return groupUserMap.get(userGroup).size() + groupMessageMap.get(userGroup).size() + senderMap.size();
+
     }
 
     public int sendMessage(Message message, User sender, Group group) {
