@@ -31,26 +31,24 @@ public class WhatsappRepository {
     }
 
     public Group createGroup(List<User> users) {
-        Group gr = new Group();
+
         List<User> al = new ArrayList<>(users);
         if(users.size() < 2){
             throw new RuntimeException("Minimum User should be two");
         }else if(users.size() == 2) {
             User ur = al.get(1);
-            gr.setNumberOfParticipants(2);
-            gr.setName(ur.getName());
-            adminMap.put(gr,users.get(0));
 
+            Group gr = new Group(ur.getName(),2);
+            adminMap.put(gr,users.get(0));
             groupUserMap.put(gr,al);
+            return gr;
         }else {
-
-            gr.setName("Group "+(customGroupCount));
-            gr.setNumberOfParticipants(users.size());
+            customGroupCount++;
+            Group gr = new Group("Group "+customGroupCount,users.size());
             groupUserMap.put(gr,al);
             adminMap.put(gr,users.get(0));
-            customGroupCount++;
+            return gr;
         }
-        return gr;
     }
 
     public int createMessage(String content) {
